@@ -28,7 +28,7 @@ Outil recommandé pour visualiser la base : [MongoDB Compass](https://www.mongod
 
 ### 1. Cloner le projet
 
-\`\`\`bash
+
 git clone https://github.com/Hamza-Naim/ets-emea-test.git
 cd ets-emea-test
 \`\`\`
