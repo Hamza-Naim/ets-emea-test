@@ -28,10 +28,10 @@ Outil recommandé pour visualiser la base : [MongoDB Compass](https://www.mongod
 
 ### 1. Cloner le projet
 
-
-git clone https://github.com/Hamza-Naim/ets-emea-test.git \n
+```bash
+git clone https://github.com/Hamza-Naim/ets-emea-test.git 
 cd ets-emea-test
-\`\`\`
+```
 
 ### 2. Créer le fichier `.env` à la racine
 
