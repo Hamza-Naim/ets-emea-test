@@ -1,0 +1,9 @@
+services:
+    # Alias public vers les services privés pour les tests
+    test.doctrine_mongodb.odm.document_manager:
+        alias: 'doctrine_mongodb.odm.default_document_manager'
+        public: true
+
+    test.password_hasher:
+        alias: 'security.user_password_hasher'
+        public: true
