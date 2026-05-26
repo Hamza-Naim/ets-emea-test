@@ -1,5 +1,4 @@
 # Environnement
-.env
 .env.local
 .env.*.local
 

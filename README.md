@@ -32,16 +32,8 @@ Outil recommandé pour visualiser la base : [MongoDB Compass](https://www.mongod
 git clone https://github.com/Hamza-Naim/ets-emea-test.git 
 cd ets-emea-test
 ```
-
-### 2. Créer le fichier `.env` à la racine
-
-Copier `.env.example` en `.env` et garder les valeurs par défaut :
-
-\`\`\`env
-MONGO_ROOT_USER=root
-MONGO_ROOT_PASSWORD=pwd_test_ets
-MONGO_DB_NAME=ets_test
-\`\`\`
+### 1. Informations de la base de données MongoDB : 
+le user et password sont dans le fichier .env a la racine du dossier ets-emea-test.
 
 ### 3. Construire et démarrer la stack
 
