@@ -37,38 +37,38 @@ le user et password sont dans le fichier .env a la racine du dossier ets-emea-te
 
 ### 3. Construire et démarrer la stack
 
-\`\`\`bash
+```bash
 docker compose up -d --build
-\`\`\`
+```
 
 La première construction prend 5 à 10 minutes (téléchargement des images et compilation de l'extension PHP MongoDB).
 
 ### 4. Installer les dépendances
 
-\`\`\`bash
+```bash
 docker compose exec api composer install
 docker compose exec front npm install
-\`\`\`
+```
 
 ### 5. Générer les clés JWT
 
-\`\`\`bash
+```bash
 docker compose exec api php bin/console lexik:jwt:generate-keypair
-\`\`\`
+```
 
 Passphrase demandée : `ets_test_passphrase`
 
 ### 6. Sur Windows : corriger les permissions
 
-\`\`\`bash
+```bash
 docker compose exec --user root api chmod -R 777 var vendor
-\`\`\`
+```
 
 ### 7. Pré-remplir la base avec des sessions de langue
 
-\`\`\`bash
+```bash
 docker compose exec api php bin/console app:seed-sessions
-\`\`\`
+```
 
 15 sessions de tests de langues sont créées.
 
@@ -90,17 +90,17 @@ Aucun compte par défaut. Aller sur http://localhost:3000/register pour créer u
 
 ### Backend (17 tests PHPUnit)
 
-\`\`\`bash
+```bash
 docker compose exec api php bin/phpunit
-\`\`\`
+```
 
 Couvre : authentification JWT, CRUD utilisateurs, sessions de tests avec pagination, réservations, règles métier (anti-doublon, gestion des places, ownership).
 
 ### Frontend (10 tests Jest)
 
-\`\`\`bash
+```bash
 docker compose exec front npm test
-\`\`\`
+```
 
 Couvre : composant ConfirmModal, client API avec intercepteurs JWT.
 
@@ -140,7 +140,7 @@ Couvre : composant ConfirmModal, client API avec intercepteurs JWT.
 
 ### Exemple d'utilisation
 
-\`\`\`bash
+```bash
 # Inscription
 curl -X POST http://localhost:8000/api/register \\
   -H "Content-Type: application/json" \\
@@ -153,13 +153,13 @@ curl -X POST http://localhost:8000/api/login \\
 
 # Appel authentifié
 curl http://localhost:8000/api/sessions -H "Authorization: Bearer VOTRE_TOKEN"
-\`\`\`
+```
 
 ## Modèle de données
 
 ### Collection `users`
 
-\`\`\`json
+```json
 {
   "_id": "ObjectId",
   "email": "string (unique)",
@@ -168,11 +168,11 @@ curl http://localhost:8000/api/sessions -H "Authorization: Bearer VOTRE_TOKEN"
   "roles": ["ROLE_USER"],
   "createdAt": "Date"
 }
-\`\`\`
+```
 
 ### Collection `sessions`
 
-\`\`\`json
+```json
 {
   "_id": "ObjectId",
   "language": "string",
@@ -182,24 +182,24 @@ curl http://localhost:8000/api/sessions -H "Authorization: Bearer VOTRE_TOKEN"
   "totalSeats": "number",
   "availableSeats": "number"
 }
-\`\`\`
+```
 
 ### Collection `reservations`
 
-\`\`\`json
+```json
 {
   "_id": "ObjectId",
   "user": "Reference -> users",
   "session": "Reference -> sessions",
   "reservedAt": "Date"
 }
-\`\`\`
+```
 
 Index unique sur `(user, session)` pour empêcher les doublons.
 
 ## Architecture
 
-\`\`\`
+```
 Navigateur
    |
    v   http://localhost:3000
@@ -221,11 +221,11 @@ Navigateur
 +----------+
 | MongoDB  |  Base de données (port 27017)
 +----------+
-\`\`\`
+```
 
 ## Structure du projet
 
-\`\`\`
+```
 ets-emea-test/
 ├── docker-compose.yml          Orchestration des services
 ├── .env                        Variables d'environnement (à créer)
@@ -266,7 +266,7 @@ ets-emea-test/
         ├── context/            AuthContext
         ├── lib/                Client API et helpers
         └── __tests__/          Tests Jest
-\`\`\`
+```
 
 ## Fonctionnalités
 
@@ -291,23 +291,23 @@ ets-emea-test/
 
 ### Erreur "Your hydrator directory must be writable" (Windows)
 
-\`\`\`bash
+```bash
 docker compose exec --user root api chmod -R 777 var vendor
-\`\`\`
+```
 
 ### Erreur JWT
 
-\`\`\`bash
+```bash
 docker compose exec --user root api rm -f config/jwt/*.pem
 docker compose exec api php bin/console lexik:jwt:generate-keypair
-\`\`\`
+```
 
 ### Erreur CORS
 
-\`\`\`bash
+```bash
 docker compose exec --user root api rm -rf var/cache
 docker compose restart api
-\`\`\`
+```
 
 ### Port déjà utilisé
 
@@ -315,14 +315,14 @@ Modifier les mappings de ports dans `docker-compose.yml`.
 
 ## Commandes utiles
 
-\`\`\`bash
+```bash
 docker compose logs -f api          # Logs API en direct
 docker compose logs -f front        # Logs frontend en direct
 docker compose exec api php bin/console debug:router  # Lister les routes
 docker compose exec api php bin/console cache:clear   # Vider le cache
 docker compose down                 # Arrêter tous les services
 docker compose down -v              # Arrêter et supprimer les volumes
-\`\`\`
+```
 
 ## Sécurité
 
