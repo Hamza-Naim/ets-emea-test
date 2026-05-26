@@ -153,16 +153,30 @@ class SessionController extends AbstractController
     }
 
     #[Route('/{id}', methods: ['DELETE'])]
-    public function delete(string $id, DocumentManager $dm): JsonResponse
+     public function delete(string $id, DocumentManager $dm): JsonResponse
     {
         $session = $dm->getRepository(TestSession::class)->find($id);
         if (!$session) {
             return $this->json(['error' => 'Session not found'], 404);
         }
 
+        // Supprimer en cascade toutes les réservations liées à cette session
+        $reservations = $dm->getRepository(\App\Document\Reservation::class)
+            ->createQueryBuilder()
+            ->field('session')->references($session)
+            ->getQuery()
+            ->toArray();
+
+        foreach ($reservations as $reservation) {
+            $dm->remove($reservation);
+        }
+
         $dm->remove($session);
         $dm->flush();
 
-        return $this->json(['message' => 'Session deleted']);
+        return $this->json([
+            'message' => 'Session deleted',
+            'cancelledReservations' => count($reservations),
+        ]);
     }
 }
