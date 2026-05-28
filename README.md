@@ -43,13 +43,24 @@ docker compose up -d --build
 
 La première construction prend 5 à 10 minutes (téléchargement des images et compilation de l'extension PHP MongoDB).
 
-### 4. Installer les dépendances
+### 4. Installer les dépendances coté docker
 
 ```bash
 docker compose exec api composer install
 docker compose exec front npm install
 ```
 
+### Installer les dépendances windows locales pour l'IDE
+Pour le backend :
+```bash
+cd C:\ets-emea-test
+docker run --rm -v "%cd%\api:/app" -w /app composer:2 install 
+--ignore-platform-reqs --no-scripts
+```
+Pour le front end : 
+```bash
+docker run --rm -v "%cd%\front:/app" -w /app node:20-alpine npm install
+```
 ### 5. Générer les clés JWT
 
 ```bash

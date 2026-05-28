@@ -4,12 +4,21 @@ namespace App\Tests;
 
 class SessionControllerTest extends ApiTestCase
 {
+    /**
+     * Vérifie qu'un utilisateur non authentifié ne peut pas accéder
+     * à la liste des sessions (réponse 401 attendue).
+     */
     public function testListRequiresAuth(): void
     {
         $response = $this->jsonRequest('GET', '/api/sessions');
         $this->assertSame(401, $response['status']);
     }
 
+    /**
+     * Vérifie que la liste des sessions est correctement paginée.
+     * Avec 15 sessions et une limite de 10 par page, la première page
+     * doit contenir 10 résultats et le total doit être 15.
+     */
     public function testListReturnsPaginatedResults(): void
     {
         $this->createUser();
@@ -25,6 +34,11 @@ class SessionControllerTest extends ApiTestCase
         $this->assertCount(10, $response['data']['data']);
     }
 
+    /**
+     * Vérifie qu'un utilisateur authentifié peut créer une nouvelle session.
+     * À la création, le nombre de places disponibles doit être égal
+     * au nombre total de places (aucune réservation initiale).
+     */
     public function testCreateSession(): void
     {
         $this->createUser();
@@ -42,6 +56,10 @@ class SessionControllerTest extends ApiTestCase
         $this->assertSame(12, $response['data']['availableSeats']);
     }
 
+    /**
+     * Vérifie qu'une session peut être modifiée et que les changements
+     * (langue, lieu, heure) sont bien persistés en base de données.
+     */
     public function testUpdateSessionChangesData(): void
     {
         $this->createUser();
@@ -67,6 +85,11 @@ class SessionControllerTest extends ApiTestCase
         $this->assertSame('Madrid', $refreshed->getLocation());
     }
 
+    /**
+     * Vérifie que lors d'une modification du nombre total de places,
+     * les places déjà réservées sont préservées. Si une session a 2 places
+     * réservées et qu'on passe le total de 10 à 15, on doit avoir 13 dispo.
+     */
     public function testUpdateSessionPreservesReservedSeats(): void
     {
         // Crée une session avec 10 places, en réserve 2, donc 8 dispo
@@ -84,6 +107,11 @@ class SessionControllerTest extends ApiTestCase
         $this->assertSame(15, $response['data']['totalSeats']);
         $this->assertSame(13, $response['data']['availableSeats']);
     }
+
+    /**
+     * Vérifie qu'une session peut être supprimée par un utilisateur authentifié
+     * et que la réponse est bien un code 200.
+     */
     public function testDeleteSession(): void
     {
         $this->createUser();
@@ -93,6 +121,13 @@ class SessionControllerTest extends ApiTestCase
         $response = $this->jsonRequest('DELETE', '/api/sessions/' . $session->getId(), $token);
         $this->assertSame(200, $response['status']);
     }
+
+    /**
+     * Vérifie la suppression en cascade : quand une session est supprimée,
+     * toutes les réservations associées sont automatiquement supprimées,
+     * et les utilisateurs concernés ne voient plus ces réservations
+     * dans leur liste personnelle.
+     */
     public function testDeleteSessionCascadesReservations(): void
     {
         // Setup : 2 users, 1 session, 2 réservations
