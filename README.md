@@ -53,13 +53,11 @@ docker compose exec front npm install
 ### Installer les dépendances locales pour l'IDE
 Pour le backend :
 ```bash
-cd C:\ets-emea-test
 docker run --rm -v "%cd%\api:/app" -w /app composer:2 install 
 --ignore-platform-reqs --no-scripts
 ```
 Pour le front end : 
 ```bash
-cd ets-emea-test
 docker run --rm -v "%cd%\front:/app" -w /app node:20-alpine npm install
 ```
 ### 5. Générer les clés JWT
